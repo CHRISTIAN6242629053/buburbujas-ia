@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pedidos web | BU-Burbujas</title>
+<style>
+body{font-family:system-ui;margin:0;background:#f3f7fa;color:#18344a}.wrap{max-width:1200px;margin:auto;padding:20px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px}.card{background:#fff;border:1px solid #dfe8ee;border-radius:18px;padding:18px;margin:14px 0}
+.login{max-width:420px;margin:80px auto}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:#fff;border-radius:14px;padding:14px;border:1px solid #dfe8ee}
+table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{text-align:left;padding:10px;border-bottom:1px solid #e5edf2;vertical-align:top}
+button,input,select{font:inherit;padding:10px;border-radius:10px;border:1px solid #cdd9e0}button{cursor:pointer;background:#0c456d;color:#fff;font-weight:800}
+.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#e9f2f7}.paid{background:#e6f7ec;color:#176934}.pending{background:#fff4d9;color:#805a00}
+@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.table-wrap{overflow:auto}}
+</style>
+</head>
+<body><div class="wrap">
+<div id="login" class="card login"><h1>Panel de pedidos web</h1><p>Ingresa la contraseña administrativa.</p><input id="password" type="password" placeholder="Contraseña"><button id="enter">Entrar</button><p id="loginMsg"></p></div>
+<div id="app" hidden>
+<header><div><h1>Pedidos web BU-Burbujas</h1><p>Anticipos y solicitudes recibidas desde la página.</p></div><button id="refresh">Actualizar</button></header>
+<div class="grid" id="stats"></div>
+<div class="card table-wrap"><table><thead><tr><th>Folio</th><th>Cliente</th><th>Servicio</th><th>Anticipo</th><th>Pago</th><th>Pedido</th><th>Acción</th></tr></thead><tbody id="rows"></tbody></table></div>
+</div></div>
+<script>
+let adminKey = sessionStorage.getItem('bbAdmin') || '';
+const fmt = n => new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(n);
+async function load(){
+ const r=await fetch('/api/admin/orders',{headers:{'x-admin-key':adminKey}});
+ if(r.status===401){sessionStorage.removeItem('bbAdmin');location.reload();return}
+ const orders=await r.json();
+ document.getElementById('login').hidden=true;document.getElementById('app').hidden=false;
+ const paid=orders.filter(o=>o.paymentStatus==='approved').length;
+ document.getElementById('stats').innerHTML=`<div class="stat"><b>${orders.length}</b><br>Pedidos</div><div class="stat"><b>${paid}</b><br>Pagados</div><div class="stat"><b>${orders.filter(o=>o.paymentStatus==='pending').length}</b><br>Pendientes</div><div class="stat"><b>${fmt(orders.filter(o=>o.paymentStatus==='approved').reduce((s,o)=>s+o.deposit,0))}</b><br>Anticipos aprobados</div>`;
+ document.getElementById('rows').innerHTML=orders.map(o=>`<tr>
+ <td><b>${o.id}</b><br><small>${new Date(o.createdAt).toLocaleString('es-MX')}</small></td>
+ <td>${o.customerName}<br>${o.customerPhone}<br><small>${o.customerEmail}</small></td>
+ <td>${o.service}<br><small>${o.estimatedQty} · ${o.branch}<br>${o.delivery}${o.zone?' · '+o.zone:''}</small></td>
+ <td>${fmt(o.deposit)}</td>
+ <td><span class="badge ${o.paymentStatus==='approved'?'paid':'pending'}">${o.paymentStatus}</span><br><small>${o.paymentId||''}</small></td>
+ <td><select data-id="${o.id}" class="state"><option ${o.orderStatus==='Nuevo'?'selected':''}>Nuevo</option><option ${o.orderStatus==='En proceso'?'selected':''}>En proceso</option><option ${o.orderStatus==='Listo'?'selected':''}>Listo</option><option ${o.orderStatus==='Entregado'?'selected':''}>Entregado</option><option ${o.orderStatus==='Cancelado'?'selected':''}>Cancelado</option></select></td>
+ <td><button onclick="saveState('${o.id}')">Guardar</button></td></tr>`).join('');
+}
+async function saveState(id){
+ const select=[...document.querySelectorAll('.state')].find(x=>x.dataset.id===id);
+ await fetch('/api/admin/orders/'+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-key':adminKey},body:JSON.stringify({orderStatus:select.value})});load();
+}
+document.getElementById('enter').onclick=async()=>{adminKey=document.getElementById('password').value;sessionStorage.setItem('bbAdmin',adminKey);try{await load()}catch(e){document.getElementById('loginMsg').textContent='No se pudo entrar.'}};
+document.getElementById('refresh').onclick=load;
+if(adminKey)load();
+</script></body></html>

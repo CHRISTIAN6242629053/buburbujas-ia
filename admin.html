@@ -1,49 +1,80 @@
 <!doctype html>
 <html lang="es-MX">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Pedidos web | BU-Burbujas</title>
-<style>
-body{font-family:system-ui;margin:0;background:#f3f7fa;color:#18344a}.wrap{max-width:1200px;margin:auto;padding:20px}
-header{display:flex;justify-content:space-between;align-items:center;gap:12px}.card{background:#fff;border:1px solid #dfe8ee;border-radius:18px;padding:18px;margin:14px 0}
-.login{max-width:420px;margin:80px auto}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.stat{background:#fff;border-radius:14px;padding:14px;border:1px solid #dfe8ee}
-table{width:100%;border-collapse:collapse;font-size:.9rem}th,td{text-align:left;padding:10px;border-bottom:1px solid #e5edf2;vertical-align:top}
-button,input,select{font:inherit;padding:10px;border-radius:10px;border:1px solid #cdd9e0}button{cursor:pointer;background:#0c456d;color:#fff;font-weight:800}
-.badge{display:inline-block;padding:5px 9px;border-radius:999px;background:#e9f2f7}.paid{background:#e6f7ec;color:#176934}.pending{background:#fff4d9;color:#805a00}
-@media(max-width:800px){.grid{grid-template-columns:1fr 1fr}.table-wrap{overflow:auto}}
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#071a33">
+  <title>BU-Burbujas | Panel administrativo</title>
+  <style>
+    :root{--bg:#06162b;--panel:rgba(12,42,75,.78);--panel2:rgba(255,255,255,.08);--line:rgba(255,255,255,.14);--text:#f4fbff;--muted:#a9c2d8;--blue:#27a7ff;--cyan:#43e5ff;--green:#33d69f;--red:#ff6b7a;--amber:#ffc857;--shadow:0 22px 60px rgba(0,0,0,.35)}
+    *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;min-height:100vh;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--text);background:radial-gradient(circle at 15% 0%,#123f70 0,transparent 34%),radial-gradient(circle at 90% 12%,#0d647b 0,transparent 28%),linear-gradient(145deg,#04101f,#071d38 56%,#041426);background-attachment:fixed}
+    body:before,body:after{content:"";position:fixed;border-radius:50%;pointer-events:none;filter:blur(1px);opacity:.24;border:1px solid rgba(104,225,255,.45)} body:before{width:190px;height:190px;right:-75px;top:18%} body:after{width:120px;height:120px;left:-52px;bottom:12%}
+    button,input{font:inherit} button{cursor:pointer}.hidden{display:none!important}
+    .shell{width:min(1120px,calc(100% - 28px));margin:auto;padding:22px 0 48px}.glass{background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+    .topbar{position:sticky;top:10px;z-index:10;border-radius:22px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:16px;display:grid;place-items:center;background:linear-gradient(135deg,var(--cyan),var(--blue));color:#01233e;font-size:24px;box-shadow:0 10px 28px rgba(39,167,255,.32)}.brand strong{display:block;font-size:17px}.brand span{display:block;color:var(--muted);font-size:12px;margin-top:2px}.account{display:flex;align-items:center;gap:10px}.account-email{max-width:230px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--muted);font-size:13px}
+    .btn{border:0;border-radius:14px;padding:11px 15px;font-weight:800;transition:.2s transform,.2s opacity,.2s background}.btn:active{transform:scale(.97)}.btn-primary{color:#01213b;background:linear-gradient(135deg,var(--cyan),var(--blue))}.btn-ghost{color:var(--text);background:rgba(255,255,255,.08);border:1px solid var(--line)}.btn-success{color:#05291f;background:var(--green)}.btn-danger{color:white;background:rgba(255,107,122,.2);border:1px solid rgba(255,107,122,.38)}.btn[disabled]{opacity:.55;cursor:not-allowed}
+    .login-wrap{min-height:calc(100vh - 44px);display:grid;place-items:center}.login-card{width:min(440px,100%);border-radius:30px;padding:28px}.login-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(67,229,255,.24);background:rgba(67,229,255,.08);color:#aef3ff;border-radius:999px;padding:7px 11px;font-size:12px;font-weight:800}.login-card h1{font-size:clamp(28px,8vw,42px);line-height:1.02;margin:18px 0 10px}.login-card p{color:var(--muted);line-height:1.6;margin:0 0 22px}.field{display:grid;gap:7px;margin:13px 0}.field label{font-size:13px;font-weight:800;color:#d8ecfa}.field input{width:100%;border-radius:15px;border:1px solid var(--line);background:rgba(1,16,31,.65);color:var(--text);padding:14px 15px;outline:none}.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(67,229,255,.12)}.login-card .btn{width:100%;margin-top:10px;padding:14px}.message{display:none;margin-top:14px;border-radius:13px;padding:11px 13px;font-size:13px;line-height:1.45}.message.show{display:block}.message.error{color:#ffd9de;background:rgba(255,107,122,.13);border:1px solid rgba(255,107,122,.28)}.message.ok{color:#caffeb;background:rgba(51,214,159,.12);border:1px solid rgba(51,214,159,.28)}
+    .dashboard{padding-top:18px}.hero{margin:18px 0;border-radius:25px;padding:22px;display:flex;align-items:flex-end;justify-content:space-between;gap:18px}.hero h1{margin:0 0 7px;font-size:clamp(26px,5vw,40px)}.hero p{margin:0;color:var(--muted)}.live{display:flex;align-items:center;gap:8px;color:#c9ffe9;font-size:13px;font-weight:800}.dot{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(51,214,159,.12)}
+    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.stat{border-radius:22px;padding:18px;min-height:130px}.stat .icon{font-size:22px}.stat .value{font-size:34px;font-weight:900;margin:10px 0 3px}.stat .label{color:var(--muted);font-size:13px}.section{margin-top:18px;border-radius:25px;padding:18px}.section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.section h2{margin:0;font-size:21px}.filters{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--muted);border-radius:999px;padding:8px 12px;font-weight:800;font-size:12px}.chip.active{background:linear-gradient(135deg,rgba(67,229,255,.22),rgba(39,167,255,.2));color:white;border-color:rgba(67,229,255,.4)}
+    .reviews{display:grid;gap:12px}.review{border:1px solid var(--line);background:rgba(2,19,37,.52);border-radius:19px;padding:16px}.review-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.person{font-weight:900}.date{color:var(--muted);font-size:12px;margin-top:4px}.stars{color:var(--amber);letter-spacing:2px;font-size:16px;white-space:nowrap}.comment{color:#e7f5ff;line-height:1.55;margin:13px 0}.status{display:inline-flex;border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900}.status.pending{background:rgba(255,200,87,.14);color:#ffe2a1}.status.approved{background:rgba(51,214,159,.13);color:#bfffe5}.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.actions .btn{padding:9px 12px;font-size:12px}.empty{text-align:center;padding:32px 15px;color:var(--muted)}.spinner{width:30px;height:30px;border-radius:50%;border:3px solid rgba(255,255,255,.14);border-top-color:var(--cyan);animation:spin .8s linear infinite;margin:0 auto 12px}@keyframes spin{to{transform:rotate(360deg)}}
+    @media(max-width:780px){.stats{grid-template-columns:repeat(2,1fr)}.account-email{display:none}.hero{align-items:flex-start;flex-direction:column}.section-head{align-items:flex-start;flex-direction:column}.topbar{top:7px}.shell{width:min(100% - 18px,1120px);padding-top:9px}.review-top{gap:8px}.actions{justify-content:stretch}.actions .btn{flex:1}.stat{min-height:112px}.stat .value{font-size:29px}}
+  </style>
 </head>
-<body><div class="wrap">
-<div id="login" class="card login"><h1>Panel de pedidos web</h1><p>Ingresa la contraseña administrativa.</p><input id="password" type="password" placeholder="Contraseña"><button id="enter">Entrar</button><p id="loginMsg"></p></div>
-<div id="app" hidden>
-<header><div><h1>Pedidos web BU-Burbujas</h1><p>Anticipos y solicitudes recibidas desde la página.</p></div><button id="refresh">Actualizar</button></header>
-<div class="grid" id="stats"></div>
-<div class="card table-wrap"><table><thead><tr><th>Folio</th><th>Cliente</th><th>Servicio</th><th>Anticipo</th><th>Pago</th><th>Pedido</th><th>Acción</th></tr></thead><tbody id="rows"></tbody></table></div>
-</div></div>
-<script>
-let adminKey = sessionStorage.getItem('bbAdmin') || '';
-const fmt = n => new Intl.NumberFormat('es-MX',{style:'currency',currency:'MXN'}).format(n);
-async function load(){
- const r=await fetch('/api/admin/orders',{headers:{'x-admin-key':adminKey}});
- if(r.status===401){sessionStorage.removeItem('bbAdmin');location.reload();return}
- const orders=await r.json();
- document.getElementById('login').hidden=true;document.getElementById('app').hidden=false;
- const paid=orders.filter(o=>o.paymentStatus==='approved').length;
- document.getElementById('stats').innerHTML=`<div class="stat"><b>${orders.length}</b><br>Pedidos</div><div class="stat"><b>${paid}</b><br>Pagados</div><div class="stat"><b>${orders.filter(o=>o.paymentStatus==='pending').length}</b><br>Pendientes</div><div class="stat"><b>${fmt(orders.filter(o=>o.paymentStatus==='approved').reduce((s,o)=>s+o.deposit,0))}</b><br>Anticipos aprobados</div>`;
- document.getElementById('rows').innerHTML=orders.map(o=>`<tr>
- <td><b>${o.id}</b><br><small>${new Date(o.createdAt).toLocaleString('es-MX')}</small></td>
- <td>${o.customerName}<br>${o.customerPhone}<br><small>${o.customerEmail}</small></td>
- <td>${o.service}<br><small>${o.estimatedQty} · ${o.branch}<br>${o.delivery}${o.zone?' · '+o.zone:''}</small></td>
- <td>${fmt(o.deposit)}</td>
- <td><span class="badge ${o.paymentStatus==='approved'?'paid':'pending'}">${o.paymentStatus}</span><br><small>${o.paymentId||''}</small></td>
- <td><select data-id="${o.id}" class="state"><option ${o.orderStatus==='Nuevo'?'selected':''}>Nuevo</option><option ${o.orderStatus==='En proceso'?'selected':''}>En proceso</option><option ${o.orderStatus==='Listo'?'selected':''}>Listo</option><option ${o.orderStatus==='Entregado'?'selected':''}>Entregado</option><option ${o.orderStatus==='Cancelado'?'selected':''}>Cancelado</option></select></td>
- <td><button onclick="saveState('${o.id}')">Guardar</button></td></tr>`).join('');
-}
-async function saveState(id){
- const select=[...document.querySelectorAll('.state')].find(x=>x.dataset.id===id);
- await fetch('/api/admin/orders/'+encodeURIComponent(id),{method:'PATCH',headers:{'Content-Type':'application/json','x-admin-key':adminKey},body:JSON.stringify({orderStatus:select.value})});load();
-}
-document.getElementById('enter').onclick=async()=>{adminKey=document.getElementById('password').value;sessionStorage.setItem('bbAdmin',adminKey);try{await load()}catch(e){document.getElementById('loginMsg').textContent='No se pudo entrar.'}};
-document.getElementById('refresh').onclick=load;
-if(adminKey)load();
-</script></body></html>
+<body>
+  <main id="loginView" class="shell login-wrap">
+    <section class="login-card glass">
+      <span class="login-badge">🔒 Acceso privado</span>
+      <h1>BU-Burbujas Admin</h1>
+      <p>Inicia sesión con la cuenta de administrador que creaste en Firebase.</p>
+      <form id="loginForm">
+        <div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="email" required placeholder="tu@correo.com"></div>
+        <div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required minlength="6" placeholder="••••••••"></div>
+        <button id="loginButton" class="btn btn-primary" type="submit">Entrar al panel</button>
+      </form>
+      <div id="loginMessage" class="message" role="status"></div>
+    </section>
+  </main>
+
+  <main id="adminView" class="shell hidden">
+    <header class="topbar glass">
+      <div class="brand"><div class="logo">🫧</div><div><strong>BU-Burbujas</strong><span>Panel administrativo</span></div></div>
+      <div class="account"><span id="accountEmail" class="account-email"></span><button id="logoutButton" class="btn btn-ghost">Salir</button></div>
+    </header>
+    <div class="dashboard">
+      <section class="hero glass"><div><h1>Reseñas de clientes</h1><p>Aprueba, revisa o elimina comentarios desde tu iPhone.</p></div><div class="live"><span class="dot"></span> Firebase conectado</div></section>
+      <section class="stats">
+        <article class="stat glass"><div class="icon">⭐</div><div id="averageStat" class="value">—</div><div class="label">Calificación promedio</div></article>
+        <article class="stat glass"><div class="icon">⏳</div><div id="pendingStat" class="value">0</div><div class="label">Pendientes</div></article>
+        <article class="stat glass"><div class="icon">✅</div><div id="approvedStat" class="value">0</div><div class="label">Aprobadas</div></article>
+        <article class="stat glass"><div class="icon">💬</div><div id="totalStat" class="value">0</div><div class="label">Total de reseñas</div></article>
+      </section>
+      <section class="section glass">
+        <div class="section-head"><h2>Administrar reseñas</h2><div class="filters"><button class="chip active" data-filter="all">Todas</button><button class="chip" data-filter="pending">Pendientes</button><button class="chip" data-filter="approved">Aprobadas</button></div></div>
+        <div id="adminMessage" class="message" role="status"></div>
+        <div id="reviewsList" class="reviews"><div class="empty"><div class="spinner"></div>Cargando reseñas…</div></div>
+      </section>
+    </div>
+  </main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
+const firebaseConfig={apiKey:"AIzaSyCSe2Z3Hl8nr6aKQRItEwHKmz2lFWhCeqw",authDomain:"lavanderia-buburbujas.firebaseapp.com",projectId:"lavanderia-buburbujas",storageBucket:"lavanderia-buburbujas.firebasestorage.app",messagingSenderId:"37968274244",appId:"1:37968274244:web:b838dc22cad956c8a3ad11",measurementId:"G-744N0K54EV"};
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id); let reviews=[],filter="all",unsubscribe=null;
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));}
+function setMessage(el,text,type="error"){el.textContent=text;el.className=`message show ${type}`;setTimeout(()=>el.classList.remove("show"),4500)}
+function dateText(v){try{if(v?.toDate)return v.toDate().toLocaleDateString("es-MX",{day:"numeric",month:"short",year:"numeric"})}catch{}return "Sin fecha"}
+function errorText(code){return ({"auth/invalid-credential":"Correo o contraseña incorrectos.","auth/invalid-email":"El correo no es válido.","auth/too-many-requests":"Demasiados intentos. Espera un momento.","auth/network-request-failed":"No se pudo conectar. Revisa tu internet."})[code]||"No se pudo iniciar sesión."}
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();const b=$("loginButton");b.disabled=true;b.textContent="Entrando…";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){setMessage($("loginMessage"),errorText(err.code))}finally{b.disabled=false;b.textContent="Entrar al panel"}});
+$("logoutButton").addEventListener("click",()=>signOut(auth));
+function listenReviews(){if(unsubscribe)unsubscribe();unsubscribe=onSnapshot(collection(db,"reviews"),snap=>{reviews=snap.docs.map(d=>({id:d.id,...d.data()}));reviews.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));render()},err=>{console.error(err);$("reviewsList").innerHTML='<div class="empty">No se pudieron cargar las reseñas. Revisa las reglas de Firestore.</div>';setMessage($("adminMessage"),"Firestore rechazó la lectura. Publica las reglas incluidas con este panel.")})}
+function render(){const approved=reviews.filter(r=>r.approved===true),pending=reviews.filter(r=>r.approved!==true),avg=approved.length?approved.reduce((s,r)=>s+Number(r.rating||0),0)/approved.length:0;$("averageStat").textContent=approved.length?avg.toFixed(1):"—";$("pendingStat").textContent=pending.length;$("approvedStat").textContent=approved.length;$("totalStat").textContent=reviews.length;const shown=reviews.filter(r=>filter==="all"||(filter==="pending"?r.approved!==true:r.approved===true));if(!shown.length){$("reviewsList").innerHTML='<div class="empty">No hay reseñas en esta categoría.</div>';return}$("reviewsList").innerHTML=shown.map(r=>{const rating=Math.max(1,Math.min(5,Number(r.rating)||5));return `<article class="review"><div class="review-top"><div><div class="person">${esc(r.name||"Cliente")}</div><div class="date">${esc(dateText(r.createdAt))}</div></div><div class="stars" aria-label="${rating} estrellas">${"★".repeat(rating)}${"☆".repeat(5-rating)}</div></div><p class="comment">${esc(r.comment||"")}</p><span class="status ${r.approved===true?"approved":"pending"}">${r.approved===true?"Aprobada":"Pendiente"}</span><div class="actions">${r.approved===true?"":`<button class="btn btn-success" data-action="approve" data-id="${r.id}">✓ Aprobar</button>`}<button class="btn btn-danger" data-action="delete" data-id="${r.id}">🗑 Eliminar</button></div></article>`}).join("")}
+$("reviewsList").addEventListener("click",async e=>{const btn=e.target.closest("button[data-action]");if(!btn)return;const id=btn.dataset.id,action=btn.dataset.action;btn.disabled=true;try{if(action==="approve"){await updateDoc(doc(db,"reviews",id),{approved:true});setMessage($("adminMessage"),"Reseña aprobada correctamente.","ok")}else{if(!confirm("¿Eliminar esta reseña definitivamente?")){btn.disabled=false;return}await deleteDoc(doc(db,"reviews",id));setMessage($("adminMessage"),"Reseña eliminada.","ok")}}catch(err){console.error(err);setMessage($("adminMessage"),"No se pudo completar la acción. Revisa las reglas de Firestore.")}finally{btn.disabled=false}});
+document.querySelectorAll(".chip").forEach(c=>c.addEventListener("click",()=>{document.querySelectorAll(".chip").forEach(x=>x.classList.remove("active"));c.classList.add("active");filter=c.dataset.filter;render()}));
+onAuthStateChanged(auth,user=>{if(user){$("loginView").classList.add("hidden");$("adminView").classList.remove("hidden");$("accountEmail").textContent=user.email||"Administrador";listenReviews()}else{if(unsubscribe){unsubscribe();unsubscribe=null}$("adminView").classList.add("hidden");$("loginView").classList.remove("hidden");$("password").value=""}});
+</script>
+</body>
+</html>
